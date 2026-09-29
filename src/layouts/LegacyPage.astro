@@ -1,0 +1,15 @@
+---
+import { siteConfig } from '../data/siteConfig';
+const { slug } = Astro.props;
+const htmlFiles = import.meta.glob('../data/pages/*.html', { eager: true, query: '?raw', import: 'default' });
+const original = htmlFiles[`../data/pages/${slug === '/' ? 'home' : slug}.html`];
+if (!original) throw new Error(`Unknown page ${slug}`);
+const html = original.replace(/\{\{(GA4_ID|TRACKER_ID|BRAND|PHONE_DISPLAY|PHONE_HREF)\}\}/g, (_token, key) => ({
+  GA4_ID: siteConfig.ga4MeasurementId,
+  TRACKER_ID: siteConfig.airchattyTrackingId,
+  BRAND: siteConfig.brand,
+  PHONE_DISPLAY: siteConfig.phoneDisplay,
+  PHONE_HREF: siteConfig.phoneHref,
+}[key as 'GA4_ID' | 'TRACKER_ID' | 'BRAND' | 'PHONE_DISPLAY' | 'PHONE_HREF']));
+---
+<Fragment set:html={html} />
