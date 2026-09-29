@@ -1,0 +1,9 @@
+---
+import LegacyPage from '../../layouts/LegacyPage.astro';
+import slugs from '../../data/pageSlugs.json';
+export function getStaticPaths() {
+  return slugs.filter(slug => slug !== '/').map(slug => ({ params: { slug } }));
+}
+const { slug } = Astro.params;
+---
+<LegacyPage slug={slug} />
